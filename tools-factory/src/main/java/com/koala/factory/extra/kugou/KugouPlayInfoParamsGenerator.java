@@ -17,10 +17,13 @@ public class KugouPlayInfoParamsGenerator {
 
     private static final String CURRENT_UUID = UUID.randomUUID().toString().replace("-", "");
 
-    public static String getPlayInfoTextParams(String hash, String mid, String albumId, KugouCustomParamsUtil customParams) {
+    public static String getPlayInfoTextParams(long timestamp, String hash, String mid, String albumId, KugouCustomParamsUtil customParams) {
         String userId = customParams.getKugouCustomParams().get("userId").toString();
         String[] paramsArray = {
                 "NVPh5oo715z5DIWAeQlhMDsWXXQV4hwt",
+                "clienttime=" + timestamp,
+                "clientver=2000",
+                "dfid=2lOrgp0YdjFP47krxK4B8tye",
                 "cmd=26",
                 "pid=4",
                 "authType=1",
@@ -40,9 +43,12 @@ public class KugouPlayInfoParamsGenerator {
         return String.join("", paramsArray);
     }
 
-    public static Map<String, String> getPlayInfoParams(String hash, String mid, String albumId, KugouCustomParamsUtil customParams, String signature) {
+    public static Map<String, String> getPlayInfoParams(long timestamp, String hash, String mid, String albumId, KugouCustomParamsUtil customParams, String signature) {
         String userId = customParams.getKugouCustomParams().get("userId").toString();
         LinkedHashMap<String, String> params = new LinkedHashMap<>();
+        params.put("clienttime", String.valueOf(timestamp));
+        params.put("clientver", String.valueOf(2000));
+        params.put("dfid", "2lOrgp0YdjFP47krxK4B8tye");
         params.put("cmd", "26");
         params.put("pid", "4");
         params.put("authType", "1");
