@@ -17,9 +17,7 @@
 
 package org.apache.rocketmq.spring.support;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import tools.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.messaging.converter.ByteArrayMessageConverter;
@@ -58,8 +56,6 @@ public class RocketMQMessageConverter {
         if (JACKSON_PRESENT) {
             MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
             ObjectMapper mapper = converter.getObjectMapper();
-            mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-            mapper.registerModule(new JavaTimeModule());
             converter.setObjectMapper(mapper);
             messageConverters.add(converter);
         }

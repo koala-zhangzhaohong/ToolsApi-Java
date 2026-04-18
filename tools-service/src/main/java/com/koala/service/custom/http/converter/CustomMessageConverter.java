@@ -1,16 +1,14 @@
 package com.koala.service.custom.http.converter;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.BeanDescription;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializationConfig;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
-import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.BeanDescription;
+import tools.jackson.databind.SerializationConfig;
+import tools.jackson.databind.ser.BeanPropertyWriter;
+import tools.jackson.databind.ser.BeanSerializerModifier;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-
-import java.io.IOException;
+import tools.jackson.databind.SerializationContext;
+import tools.jackson.databind.ValueSerializer;
 import java.util.Collection;
 import java.util.List;
 
@@ -25,9 +23,9 @@ public class CustomMessageConverter extends MappingJackson2HttpMessageConverter 
     /**
      * 处理数组类型的null值
      */
-    public static class NullArrayJsonSerializer extends JsonSerializer<Object> {
+    public static class NullArrayJsonSerializer extends ValueSerializer<Object> {
         @Override
-        public void serialize(Object value, JsonGenerator json, SerializerProvider provider) throws IOException {
+        public void serialize(Object value, JsonGenerator json, SerializationContext provider) {
             if (value == null) {
                 json.writeStartArray();
                 json.writeEndArray();
@@ -39,9 +37,9 @@ public class CustomMessageConverter extends MappingJackson2HttpMessageConverter 
     /**
      * 处理字符串类型的null值
      */
-    public static class NullStringJsonSerializer extends JsonSerializer<Object> {
+    public static class NullStringJsonSerializer extends ValueSerializer<Object> {
         @Override
-        public void serialize(Object o, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+        public void serialize(Object o, JsonGenerator jsonGenerator, SerializationContext serializerProvider) {
             jsonGenerator.writeString(StringUtils.EMPTY);
         }
     }
@@ -49,9 +47,9 @@ public class CustomMessageConverter extends MappingJackson2HttpMessageConverter 
     /**
      * 处理数字类型的null值
      */
-    public static class NullNumberJsonSerializer extends JsonSerializer<Object> {
+    public static class NullNumberJsonSerializer extends ValueSerializer<Object> {
         @Override
-        public void serialize(Object o, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+        public void serialize(Object o, JsonGenerator jsonGenerator, SerializationContext serializerProvider) {
             jsonGenerator.writeNumber(0);
         }
     }
@@ -59,10 +57,10 @@ public class CustomMessageConverter extends MappingJackson2HttpMessageConverter 
     /**
      * 处理布尔类型的null值
      */
-    public static class NullBooleanJsonSerializer extends JsonSerializer<Object> {
+    public static class NullBooleanJsonSerializer extends ValueSerializer<Object> {
 
         @Override
-        public void serialize(Object o, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+        public void serialize(Object o, JsonGenerator jsonGenerator, SerializationContext serializerProvider) {
             jsonGenerator.writeBoolean(false);
         }
     }
