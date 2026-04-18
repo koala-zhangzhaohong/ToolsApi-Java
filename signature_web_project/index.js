@@ -1,7 +1,7 @@
 const axios = require('axios');
 const crypto = require('crypto');
 const express = require("express");
-const {sign} = require("./Signer.js");
+const {sign} = require("./lib/js/xbogus.js");
 const cryptoJs = require('crypto-js');
 const {EventEmitter} = require('events');
 const emitter = new EventEmitter();
