@@ -1,6 +1,7 @@
 package com.koala.factory.product;
 
 import com.koala.base.enums.DouYinTypeEnums;
+import com.koala.data.models.abogus.AbogusDataModel;
 import com.koala.data.models.douyin.MultiLiveQualityDetailInfoModel;
 import com.koala.data.models.douyin.MultiLiveQualityInfoModel;
 import com.koala.data.models.douyin.MultiVideoQualityInfoModel;
@@ -172,7 +173,7 @@ public class DouYinApiProduct {
                 case VIDEO_TYPE, NOTE_TYPE -> {
                     String itemInfoPath = "https://www.douyin.com/aweme/v1/web/aweme/detail/?aweme_id=" + this.itemId + "&device_platform=webapp&aid=6383";
                     logger.info("[DouYinApiProduct]({}, {}) itemInfoPath: {}", id, itemId, itemInfoPath);
-                    String itemInfoResponse = doGetXbogusRequest(itemInfoPath);
+                    String itemInfoResponse = doGetAbogusRequest(itemInfoPath);
                     logger.info("[DouYinApiProduct]({}, {}) itemInfoResponse: {}", id, itemId, itemInfoResponse);
                     try {
                         this.itemInfo = GsonUtil.toBean(itemInfoResponse, ItemInfoRespModel.class);
@@ -373,6 +374,27 @@ public class DouYinApiProduct {
         boolean isLive = Objects.equals(this.itemTypeId, LIVE_TYPE_1.getCode()) || Objects.equals(this.itemTypeId, LIVE_TYPE_2.getCode());
         while (retryTime < MAX_RETRY_TIMES) {
             response = HttpClientUtil.doGet(xbogusDataModel.getUrl(), HeaderUtil.getDouYinSpecialHeader(xbogusDataModel.getMstoken(), xbogusDataModel.getTtwid(), cookieData, isLive), null);
+            if (StringUtils.hasLength(response)) {
+                return response;
+            }
+            retryTime++;
+            logger.info("[DouYinApiProduct]({}, {}) Get data error, retry time: {}", id, itemId, retryTime);
+        }
+        return null;
+    }
+
+    private String doGetAbogusRequest(String inputUrl) throws IOException, URISyntaxException {
+        AbogusDataModel abogusDataModel = AbogusUtil.encrypt(inputUrl);
+        if (Objects.isNull(abogusDataModel) || ObjectUtils.isEmpty(abogusDataModel.getUrl())) {
+            logger.error("[DouYinApiProduct]({}, {}) encrypt error, encryptResult: {}", id, itemId, abogusDataModel);
+            throw new NullPointerException("encrypt error");
+        }
+        logger.info("[DouYinApiProduct]({}, {}) encryptResult: {}", id, itemId, abogusDataModel);
+        int retryTime = 0;
+        String response;
+        boolean isLive = Objects.equals(this.itemTypeId, LIVE_TYPE_1.getCode()) || Objects.equals(this.itemTypeId, LIVE_TYPE_2.getCode());
+        while (retryTime < MAX_RETRY_TIMES) {
+            response = HttpClientUtil.doGet(abogusDataModel.getUrl(), HeaderUtil.getDouYinSpecialHeader(abogusDataModel.getMstoken(), abogusDataModel.getTtwid(), cookieData, isLive), null);
             if (StringUtils.hasLength(response)) {
                 return response;
             }
