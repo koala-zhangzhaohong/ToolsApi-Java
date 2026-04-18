@@ -415,7 +415,12 @@ function sign_reply(params, userAgent) {
     return bogus.getValue(params, "GET");
 }
 
+function sign_a_bogus(params, userAgent) {
+    const bogus = new ABogus();
+    return bogus.getValue(params, "GET");
+}
+
 // Export for Node.js if needed
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { ABogus, createABogus, get_a_bogus, sign_datail, sign_reply };
+    module.exports = { ABogus, createABogus, get_a_bogus, sign_datail, sign_reply, sign_a_bogus };
 }

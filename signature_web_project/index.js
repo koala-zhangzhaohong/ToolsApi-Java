@@ -1,7 +1,7 @@
 const axios = require('axios');
 const crypto = require('crypto');
 const express = require("express");
-const {sign} = require("./lib/js/xbogus.js");
+const {sign_x_bogus} = require("./lib/js/xbogus.js");
 const cryptoJs = require('crypto-js');
 const {EventEmitter} = require('events');
 const emitter = new EventEmitter();
@@ -162,7 +162,7 @@ app.post("/tiktok", async (req, res) => {
         }
 
         const query = url.includes("?") ? url.split("?")[1] : "";
-        const xbogus = sign(query, userAgent);
+        const xbogus = sign_x_bogus(query, userAgent);
         let newUrl = "";
         if (query.length === 0 && url.includes("?")) newUrl = `${url}X-Bogus=${xbogus}`
         else if (query.length > 0) newUrl = `${url}&X-Bogus=${xbogus}`
