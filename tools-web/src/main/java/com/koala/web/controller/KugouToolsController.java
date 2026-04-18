@@ -42,6 +42,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static com.koala.base.enums.KugouResponseEnums.*;
+import static com.koala.factory.extra.kugou.KugouPlayInfoParamsGenerator.getPlayInfoTextParams;
 import static com.koala.factory.extra.kugou.KugouSearchParamsGenerator.getSearchParams;
 import static com.koala.factory.extra.kugou.KugouSearchParamsGenerator.getSearchTextParams;
 import static com.koala.factory.path.KugouWebPathCollector.*;
@@ -177,8 +178,12 @@ public class KugouToolsController {
     @GetMapping(value = "api/playInfo", produces = {"application/json;charset=utf-8"})
     public String playInfo(@RequestParam(required = false) String hash, @RequestParam(required = false) String albumId) throws IOException, URISyntaxException {
         String mid = KugouMidGenerator.getMid();
+        String signature = MD5Utils.md5(getPlayInfoTextParams(hash, mid, albumId, customParams));
+        if (!StringUtils.hasLength(signature)) {
+            return formatRespData(GET_SIGNATURE_FAILED, null);
+        }
         String cookie = customParams.getKugouCustomParams().get("kg_cookie").toString();
-        String response = HttpClientUtil.doGet(KUGOU_DETAIL_SERVER_URL_V2, HeaderUtil.getKugouPublicHeader(null, cookie), KugouPlayInfoParamsGenerator.getPlayInfoParams(hash, mid, albumId, customParams));
+        String response = HttpClientUtil.doGet(KUGOU_DETAIL_SERVER_URL_V2, HeaderUtil.getKugouPublicHeader(null, cookie), KugouPlayInfoParamsGenerator.getPlayInfoParams(hash, mid, albumId, customParams, signature));
         if (StringUtils.hasLength(response)) {
             return formatRespData(GET_DATA_SUCCESS, GsonUtil.toBean(response, Object.class));
         }
