@@ -2,6 +2,7 @@ const axios = require('axios');
 const crypto = require('crypto');
 const express = require("express");
 const {sign_x_bogus} = require("./lib/js/xbogus.js");
+const {sign_a_bogus} = require("./lib/js/abogus.js");
 const cryptoJs = require('crypto-js');
 const {EventEmitter} = require('events');
 const emitter = new EventEmitter();
@@ -153,7 +154,7 @@ app.post("/kugou/v2", async (req, res) => {
     }
 });
 
-app.post("/tiktok", async (req, res) => {
+app.post("/tiktok/sign/x_bogus", async (req, res) => {
     try {
         const {url, userAgent} = req.body;
 
@@ -183,6 +184,46 @@ app.post("/tiktok", async (req, res) => {
             data: {
                 xbogus: xbogus,
                 mstoken: xbogusToken,
+                ttwid: ttwid,
+                url: newUrl
+            }
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(400).json({code: 201, msg: err.message});
+    }
+});
+
+app.post("/tiktok/sign/a_bogus", async (req, res) => {
+    try {
+        const {url, userAgent} = req.body;
+
+        if (!url || !userAgent) {
+            throw new Error("Missing required parameters.");
+        }
+
+        const query = url.includes("?") ? url.split("?")[1] : "";
+        const abogus = sign_a_bogus(query, userAgent);
+        let newUrl = "";
+        if (query.length === 0 && url.includes("?")) newUrl = `${url}a_bogus=${abogus}`
+        else if (query.length > 0) newUrl = `${url}&a_bogus=${abogus}`
+        else if (newUrl.endsWith("/")) newUrl = `${url}?a_bogus=${abogus}`
+        else newUrl = `${url}/?a_bogus=${abogus}`
+        const [abogusToken, ttwid] = await Promise.all([msToken(107), getTtwid()]);
+
+        console.info({
+            abogus: abogus,
+            mstoken: abogusToken,
+            ttwid: ttwid,
+            url: newUrl
+        });
+
+        res.status(200).json({
+            code: 200,
+            msg: "success",
+            data: {
+                abogus: abogus,
+                mstoken: abogusToken,
                 ttwid: ttwid,
                 url: newUrl
             }
