@@ -16,7 +16,7 @@ public class KugouPlayInfoParamsGenerator {
 
     private static final String CURRENT_UUID = UUID.randomUUID().toString().replace("-", "");
 
-    public static Map<String, String> getPlayInfoParamsV3(long timestamp, String hash, String mid, String albumId, KugouCustomParamsUtil customParams) {
+    public static Map<String, String> getPlayInfoParamsV3(long timestamp, String hash, String mid, String albumId, String quality, KugouCustomParamsUtil customParams) {
         String userId = customParams.getKugouCustomParams().get("userId").toString();
         String token = customParams.getKugouCustomParams().get("token").toString();
         String appId = "1005";
@@ -38,7 +38,7 @@ public class KugouPlayInfoParamsGenerator {
         params.put("mid", mid);
         params.put("version", "10479");
         params.put("token", token);
-        params.put("quality", "flac");
+        params.put("quality", quality);
         params.put("vipType", "6");
         params.put("userid", userId);
         params.put("area_code", "1");
