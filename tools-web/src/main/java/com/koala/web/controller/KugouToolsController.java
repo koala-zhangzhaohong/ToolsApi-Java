@@ -182,7 +182,7 @@ public class KugouToolsController {
                     response = null;
                 }
                 case 1 -> {
-                    response = HttpClientUtil.doGet(KUGOU_DETAIL_SERVER_URL_V5, HeaderUtil.getKugouPublicHeader(null, cookie), KugouPlayInfoParamsGenerator.getPlayInfoParamsV1(hash, mid, albumId, customParams));
+                    response = HttpClientUtil.doGet(KUGOU_DETAIL_SERVER_URL_V2, HeaderUtil.getKugouPublicHeader(null, cookie), KugouPlayInfoParamsGenerator.getPlayInfoParamsV1(hash, mid, albumId, customParams));
                 }
             }
         } catch (Exception e) {
