@@ -268,11 +268,11 @@ public class KugouToolsController {
                 String albumId = tmp.getMusicInfo().getAlbumInfo().getAlbumId();
                 String mid = KugouMidGenerator.getMid();
                 String cookie = customParams.getKugouCustomParams().get("kg_cookie").toString();
-                Long timestamp = System.currentTimeMillis();
+                long timestamp = System.currentTimeMillis();
                 String resp = null;
                 switch (version) {
                     case 3 -> {
-                        resp = HttpClientUtil.doGet(KUGOU_DETAIL_SERVER_URL_V5, HeaderUtil.getKugouPublicHeader(null, cookie), KugouPlayInfoParamsGenerator.getPlayInfoParamsV3(timestamp, hash, mid, albumId, KugouRequestQualityEnums.getEnumsByType(quality).getType(), customParams));
+                        resp = HttpClientUtil.doGet(KUGOU_DETAIL_SERVER_URL_V5, HeaderUtil.getKugouPublicHeader(null, cookie), KugouPlayInfoParamsGenerator.getPlayInfoParamsV3(timestamp, hash, mid, albumId, quality, customParams));
                     }
                     case 2 -> {
                         // v2接口兜底
