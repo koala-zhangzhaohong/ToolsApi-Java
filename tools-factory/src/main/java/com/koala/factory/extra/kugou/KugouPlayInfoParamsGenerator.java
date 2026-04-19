@@ -5,7 +5,6 @@ import com.koala.service.utils.MD5Utils;
 import java.util.*;
 
 import static com.koala.factory.extra.kugou.KugouSingnatureGenerator.*;
-import static com.koala.factory.path.KugouWebPathCollector.KUGOU_DETAIL_SERVER_URL_V5;
 
 /**
  * @author koala
@@ -25,25 +24,24 @@ public class KugouPlayInfoParamsGenerator {
         String cmd = "26";
         String clienttime = String.valueOf(timestamp / 1000);
         String uuid = CURRENT_UUID;
-        String area_code = "1";//1代表中国地区，如果IP为海外或者港澳台，需要加上这个参数
+        String areaCode = "1";//1代表中国地区，如果IP为海外或者港澳台，需要加上这个参数
         String behavior = "play";//需要配置为play，不消耗下载次数。如果配置为download，则会消耗下载次数。
         String appId = "1005";
         String module = "";
         String vipType = "6";
         String ptype = "0";
         String mtype = "2";
-        String album_id = "2900867";
         String pidversion = "3001";//用jadx反编译apk后，可以在res目录下找到一个配置文件，里面存储了这个值
         String clientver = "10479";
         String version = "10479";
-        String album_audio_id = albumId;
+        String albumAudioId = albumId;
 
         Map<String, String> params = new HashMap<>();
         params.put("dfid", dfid);
         params.put("hash", hash);
         params.put("mtype", mtype);
-        params.put("album_id", album_id);
-        params.put("album_audio_id", album_audio_id);
+        params.put("album_id", albumId);
+        params.put("album_audio_id", albumAudioId);
         params.put("module", module);
         params.put("behavior", behavior);
         params.put("cmd", cmd);
@@ -58,7 +56,7 @@ public class KugouPlayInfoParamsGenerator {
         params.put("quality", "flac");
         params.put("vipType", vipType);
         params.put("userid", userId);
-        params.put("area_code", area_code);
+        params.put("area_code", areaCode);
         params.put("dfid", dfid);
         params.put("ptype", ptype);
         params.put("pidversion", pidversion);
