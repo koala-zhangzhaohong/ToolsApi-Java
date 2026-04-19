@@ -4,8 +4,8 @@ import com.koala.service.utils.MD5Utils;
 
 import java.util.*;
 
-import static com.koala.factory.SecretKey.KugouSecretKeyCollector.KUGOU_PID_VERSION_SECRET_KEY;
 import static com.koala.factory.extra.kugou.KugouSingnatureGenerator.*;
+import static com.koala.factory.path.KugouWebPathCollector.KUGOU_DETAIL_SERVER_URL_V5;
 
 /**
  * @author koala
@@ -17,19 +17,71 @@ public class KugouPlayInfoParamsGenerator {
 
     private static final String CURRENT_UUID = UUID.randomUUID().toString().replace("-", "");
 
-    public static Map<String, String> getPlayInfoParamsV3(long timestamp, String hash, String mid, String albumId, KugouCustomParamsUtil customParams) {
+    public static Map<String, String> getPlayInfoParamsV4(long timestamp, String hash, String mid, String albumId, KugouCustomParamsUtil customParams) {
         String userId = customParams.getKugouCustomParams().get("userId").toString();
+        String token = customParams.getKugouCustomParams().get("token").toString();
+        String dfid = "2lOrgp0YdjFP47krxK4B8tye";
+        String pid = "2";
+        String cmd = "26";
+        String clienttime = String.valueOf(timestamp / 1000);
+        String uuid = CURRENT_UUID;
+        String area_code = "1";//1代表中国地区，如果IP为海外或者港澳台，需要加上这个参数
+        String behavior = "play";//需要配置为play，不消耗下载次数。如果配置为download，则会消耗下载次数。
         String appId = "1005";
-        LinkedHashMap<String, String> params = new LinkedHashMap<>();
+        String module = "";
+        String vipType = "6";
+        String ptype = "0";
+        String mtype = "2";
+        String album_id = "2900867";
+        String pidversion = "3001";//用jadx反编译apk后，可以在res目录下找到一个配置文件，里面存储了这个值
+        String clientver = "10479";
+        String version = "10479";
+        String album_audio_id = albumId;
+
+        Map<String, String> params = new HashMap<>();
+        params.put("dfid", dfid);
+        params.put("hash", hash);
+        params.put("mtype", mtype);
+        params.put("album_id", album_id);
+        params.put("album_audio_id", album_audio_id);
+        params.put("module", module);
+        params.put("behavior", behavior);
+        params.put("cmd", cmd);
+        params.put("uuid", uuid);
+        params.put("clientver", clientver);
+        params.put("clienttime", clienttime);
+        params.put("pid", pid);
+        params.put("appid", appId);
+        params.put("mid", mid);
+        params.put("version", version);
+        params.put("token", token);
+        params.put("quality", "flac");
+        params.put("vipType", vipType);
+        params.put("userid", userId);
+        params.put("area_code", area_code);
+        params.put("dfid", dfid);
+        params.put("ptype", ptype);
+        params.put("pidversion", pidversion);
+        params.put("key", generateKugouKey(hash, appId, mid, userId));
+        params.put("signature", generateKugouSignatureV1(params));
+        return params;
+    }
+
+    public static Map<String, String> getPlayInfoParamsV3(long timestamp, String hash, String albumId, KugouCustomParamsUtil customParams) {
+        String userId = customParams.getKugouCustomParams().get("userId").toString();
+        String mid = "41e9f19597c427e5aaeb4a4a57ead9cc";
+        String uuid = "41e9f19597c427e5aaeb4a4a57ead9cc";
+        String appId = "1005";
+        Map<String, String> params = new HashMap<>();
         params.put("dfid", "2lOrgp0YdjFP47krxK4B8tye");
         params.put("hash", hash.toLowerCase());
         params.put("mtype", "2");
         params.put("album_id", albumId);
-        params.put("album_audio_id", albumId);
+        params.put("album_audio_id", "");
         params.put("module", "");
         params.put("behavior", "play");
         params.put("cmd", "26");
-        params.put("uuid", CURRENT_UUID);
+        params.put("uuid", uuid);
         params.put("clientver", "10479");
         params.put("clienttime", timestamp / 1000 + "");
         params.put("pid", "2");
@@ -41,7 +93,7 @@ public class KugouPlayInfoParamsGenerator {
         params.put("userid", userId);
         params.put("area_code", "1");
         params.put("ptype", "0");
-        params.put("pidversion", KUGOU_PID_VERSION_SECRET_KEY);
+        params.put("pidversion", "3001");
         params.put("quality", "flac");
         params.put("key", generateKugouKey(hash, appId, mid, userId));
         String signature = generateKugouSignatureV1(params);
@@ -49,7 +101,6 @@ public class KugouPlayInfoParamsGenerator {
             return null;
         }
         params.put("signature", signature);
-        System.out.println(getGetRequestParams(params));
         return params;
     }
 
@@ -75,23 +126,6 @@ public class KugouPlayInfoParamsGenerator {
 
     private static String getKey(String hash, String mid, String userId) {
         return MD5Utils.md5(hash.toLowerCase() + "kgcloudv21155" + mid + userId);
-    }
-
-    private static String getGetRequestParams(Map<String,String> map) {
-        if (map == null) {
-            return "";
-        }
-        StringBuilder sb = new StringBuilder();
-        sb.append("?");
-        Set<String> keySet = map.keySet();
-        for (String str : keySet) {
-            sb.append(str);
-            sb.append("=");
-            sb.append(map.get(str));
-            sb.append("&");
-        }
-        sb.deleteCharAt(sb.length() - 1);
-        return sb.toString();
     }
 
 }

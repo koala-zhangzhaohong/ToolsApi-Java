@@ -44,6 +44,24 @@ class KugouSingnatureGenerator {
             }
             return MD5Utils.md5(KUGOU_ITEM_SECRET_KEY + sb + KUGOU_ITEM_SECRET_KEY)
         }
+
+        @JvmStatic
+        fun getGetRequestParams(map: MutableMap<String?, String?>?): String {
+            if (map == null) {
+                return ""
+            }
+            val sb = java.lang.StringBuilder()
+            sb.append("?")
+            val keySet = map.keys
+            for (str in keySet) {
+                sb.append(str)
+                sb.append("=")
+                sb.append(map.get(str))
+                sb.append("&")
+            }
+            sb.deleteCharAt(sb.length - 1)
+            return sb.toString()
+        }
     }
 
 }
