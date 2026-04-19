@@ -20,7 +20,7 @@ public class KugouPlayInfoParamsGenerator {
     public static String getPlayInfoTextParams(long timestamp, String hash, String mid, String albumId, KugouCustomParamsUtil customParams) {
         String userId = customParams.getKugouCustomParams().get("userId").toString();
         String[] paramsArray = {
-                "NVPh5oo715z5DIWAeQlhMDsWXXQV4hwt",
+                "OIlwieks28dk2k092lksi2UIkp",
                 "clienttime=" + timestamp,
                 "clientver=2000",
                 "dfid=2lOrgp0YdjFP47krxK4B8tye",
@@ -38,7 +38,7 @@ public class KugouPlayInfoParamsGenerator {
                 "version=3.1.2",
                 "vipType=6",
                 "album_id=" + albumId,
-                "NVPh5oo715z5DIWAeQlhMDsWXXQV4hwt"
+                "OIlwieks28dk2k092lksi2UIkp"
         };
         return String.join("", paramsArray);
     }
